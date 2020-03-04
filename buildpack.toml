@@ -15,24 +15,12 @@
 api = "0.2"
 
 [buildpack]
-id      = "packetoio/procfile"
+id      = "paketoio/procfile"
 name    = "Paketo Procfile Buildpack"
 version = "{{.Version}}"
 
 [[stacks]]
 id = "io.buildpacks.stacks.bionic"
-
-# [[metadata.dependencies]]
-# id      = ""
-# name    = ""
-# version = ""
-# uri     = ""
-# sha256  = ""
-# stacks  = [ "io.buildpacks.stacks.bionic" ]
-
-#   [[metadata.dependencies.licenses]]
-#   type = "<TYPE>"
-#   uri  = "<URI>"
 
 [metadata]
 pre_package   = "scripts/build.sh"

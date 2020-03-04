@@ -16,5 +16,12 @@
 
 package main
 
+import (
+	"github.com/paketoio/libpak"
+	"github.com/paketoio/procfile/procfile"
+)
+
 func main() {
+	d := procfile.Detect{}
+	libpak.Detect(d.Detect)
 }

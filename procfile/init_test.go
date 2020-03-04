@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package main
+package procfile_test
 
 import (
-	"github.com/paketoio/libpak"
-	"github.com/paketoio/procfile/procfile"
+	"testing"
+
+	"github.com/sclevine/spec"
+	"github.com/sclevine/spec/report"
 )
 
-func main() {
-	b := procfile.NewBuild()
-	libpak.Build(b.Build)
+func TestUnit(t *testing.T) {
+	suite := spec.New("procfile", spec.Report(report.Terminal{}))
+	suite("Build", testBuild)
+	suite("Detect", testDetect)
+	suite("Procfile", testProcfile)
+	suite.Run(t)
 }

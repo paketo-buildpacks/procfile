@@ -14,14 +14,35 @@
  * limitations under the License.
  */
 
-package main
+package procfile
 
 import (
-	"github.com/paketoio/libpak"
-	"github.com/paketoio/procfile/procfile"
+	"github.com/buildpacks/libcnb"
 )
 
-func main() {
-	b := procfile.NewBuild()
-	libpak.Build(b.Build)
+type Detect struct{}
+
+func (d Detect) Detect(context libcnb.DetectContext) (libcnb.DetectResult, error) {
+	p, err := NewProcfileFromPath(context.ApplicationPath)
+	if err != nil {
+		return libcnb.DetectResult{}, err
+	}
+
+	if len(p) == 0 {
+		return libcnb.DetectResult{Pass: false}, nil
+	}
+
+	return libcnb.DetectResult{
+		Pass: true,
+		Plans: []libcnb.BuildPlan{
+			{
+				Provides: []libcnb.BuildPlanProvide{
+					{Name: "procfile"},
+				},
+				Requires: []libcnb.BuildPlanRequire{
+					{Name: "procfile", Metadata: p},
+				},
+			},
+		},
+	}, nil
 }
