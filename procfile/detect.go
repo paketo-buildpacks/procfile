@@ -23,7 +23,7 @@ import (
 type Detect struct{}
 
 func (d Detect) Detect(context libcnb.DetectContext) (libcnb.DetectResult, error) {
-	p, err := NewProcfileFromPath(context.ApplicationPath)
+	p, err := NewProcfileFromPath(context.Application.Path)
 	if err != nil {
 		return libcnb.DetectResult{}, err
 	}

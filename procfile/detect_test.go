@@ -41,7 +41,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 		path, err = ioutil.TempDir("", "procfile")
 		Expect(err).NotTo(HaveOccurred())
 
-		ctx.ApplicationPath = path
+		ctx.Application.Path = path
 	})
 
 	it("fails without Procfile", func() {
