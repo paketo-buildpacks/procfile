@@ -3,7 +3,8 @@
 set -euo pipefail
 
 if [[ -d ../go-cache ]]; then
-  export GOPATH=../go-cache
+  GOPATH=$(realpath ../go-cache)
+  export GOPATH
 fi
 
 GOOS="linux" go build -ldflags='-s -w' -o bin/build cmd/build/main.go
