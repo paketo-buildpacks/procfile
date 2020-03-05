@@ -7,5 +7,5 @@ if [[ -d ../go-cache ]]; then
   export GOPATH
 fi
 
-GOOS="linux" go build -ldflags='-s -w' -o bin/build cmd/build
-GOOS="linux" go build -ldflags='-s -w' -o bin/detect cmd/detect
+GOOS="linux" go build -ldflags='-s -w' -o bin/build github.com/paketoio/procfile/cmd/build
+GOOS="linux" go build -ldflags='-s -w' -o bin/detect github.com/paketoio/procfile/cmd/detect
