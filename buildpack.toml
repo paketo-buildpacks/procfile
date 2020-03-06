@@ -23,8 +23,8 @@ version = "{{.Version}}"
 id = "io.buildpacks.stacks.bionic"
 
 [metadata]
-pre_package   = "scripts/build.sh"
-include_files = [
+pre-package   = "scripts/build.sh"
+include-files = [
   "LICENSE",
   "NOTICE",
   "README.md",
