@@ -22,8 +22,8 @@ import (
 	"sort"
 
 	"github.com/buildpacks/libcnb"
-	"github.com/paketoio/libpak"
-	"github.com/paketoio/libpak/bard"
+	"github.com/paketo-buildpacks/libpak"
+	"github.com/paketo-buildpacks/libpak/bard"
 )
 
 type Build struct {

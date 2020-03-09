@@ -22,7 +22,7 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	"github.com/paketoio/procfile/procfile"
+	"github.com/paketo-buildpacks/procfile/procfile"
 	"github.com/sclevine/spec"
 )
 

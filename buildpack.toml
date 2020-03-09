@@ -15,7 +15,7 @@
 api = "0.2"
 
 [buildpack]
-id      = "paketoio/procfile"
+id      = "paketo-buildpacks/procfile"
 name    = "Paketo Procfile Buildpack"
 version = "{{.Version}}"
 

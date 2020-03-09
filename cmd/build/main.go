@@ -17,8 +17,8 @@
 package main
 
 import (
-	"github.com/paketoio/libpak"
-	"github.com/paketoio/procfile/procfile"
+	"github.com/paketo-buildpacks/libpak"
+	"github.com/paketo-buildpacks/procfile/procfile"
 )
 
 func main() {
