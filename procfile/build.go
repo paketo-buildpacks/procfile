@@ -34,7 +34,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 
 	e, ok, err := r.Resolve("procfile")
 	if err != nil {
-		return libcnb.BuildResult{}, fmt.Errorf("unable to resolve buildpack plan entry procfile: %w", err)
+		return libcnb.BuildResult{}, fmt.Errorf("unable to resolve buildpack plan entry procfile\n%w", err)
 	} else if !ok {
 		return libcnb.BuildResult{}, nil
 	}

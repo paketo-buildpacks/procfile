@@ -37,7 +37,7 @@ func NewProcfileFromPath(path string) (Procfile, error) {
 	if err != nil && os.IsNotExist(err) {
 		return Procfile{}, nil
 	} else if err != nil {
-		return nil, fmt.Errorf("unable to open Procfile %s: %w", f, err)
+		return nil, fmt.Errorf("unable to open Procfile %s\n%w", f, err)
 	}
 	defer file.Close()
 
@@ -52,7 +52,7 @@ func NewProcfileFromPath(path string) (Procfile, error) {
 	}
 
 	if err := s.Err(); err != nil {
-		return nil, fmt.Errorf("unable to parse Procfile %s: %w", f, err)
+		return nil, fmt.Errorf("unable to parse Procfile %s\n%w", f, err)
 	}
 
 	return p, nil
