@@ -22,6 +22,5 @@ import (
 )
 
 func main() {
-	d := procfile.Detect{}
-	libpak.Detect(d.Detect)
+	libpak.Detect(procfile.Detect{})
 }

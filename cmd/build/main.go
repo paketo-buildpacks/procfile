@@ -17,11 +17,13 @@
 package main
 
 import (
+	"os"
+
 	"github.com/paketo-buildpacks/libpak"
+	"github.com/paketo-buildpacks/libpak/bard"
 	"github.com/paketo-buildpacks/procfile/procfile"
 )
 
 func main() {
-	b := procfile.NewBuild()
-	libpak.Build(b.Build)
+	libpak.Build(procfile.Build{Logger:bard.NewLogger(os.Stdout)})
 }
