@@ -30,17 +30,16 @@ type Build struct {
 }
 
 func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
-	r := libpak.PlanEntryResolver{Plan: context.Plan}
+	b.Logger.Title(context.Buildpack)
+	result := libcnb.BuildResult{}
 
+	r := libpak.PlanEntryResolver{Plan: context.Plan}
 	e, ok, err := r.Resolve("procfile")
 	if err != nil {
 		return libcnb.BuildResult{}, fmt.Errorf("unable to resolve buildpack plan entry procfile\n%w", err)
 	} else if !ok {
 		return libcnb.BuildResult{}, nil
 	}
-
-	b.Logger.Title(context.Buildpack)
-	result := libcnb.BuildResult{}
 
 	for k, v := range e.Metadata {
 		result.Processes = append(result.Processes, libcnb.Process{Type: k, Command: v.(string)})
