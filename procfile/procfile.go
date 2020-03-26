@@ -30,7 +30,7 @@ type Procfile map[string]interface{}
 // NewProcfile creates a Procfile by reading Procfile from path if it exists.  If it does not exist, returns an
 // empty Procfile.
 func NewProcfileFromPath(path string) (Procfile, error) {
-	pat := regexp.MustCompile("^([A-Za-z0-9_-]+):\\s*(.+)$")
+	pat := regexp.MustCompile(`^([A-Za-z0-9_-]+):\s*(.+)$`)
 
 	f := filepath.Join(path, "Procfile")
 	file, err := os.OpenFile(f, os.O_RDONLY, 0644)
