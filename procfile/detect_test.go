@@ -18,6 +18,7 @@ package procfile_test
 
 import (
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -42,6 +43,10 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 		Expect(err).NotTo(HaveOccurred())
 
 		ctx.Application.Path = path
+	})
+
+	it.After(func() {
+		Expect(os.RemoveAll(path)).To(Succeed())
 	})
 
 	it("fails without Procfile", func() {

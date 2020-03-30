@@ -18,6 +18,7 @@ package procfile_test
 
 import (
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -37,6 +38,10 @@ func testProcfile(t *testing.T, context spec.G, it spec.S) {
 		var err error
 		path, err = ioutil.TempDir("", "procfile")
 		Expect(err).NotTo(HaveOccurred())
+	})
+
+	it.After(func() {
+		Expect(os.RemoveAll(path)).To(Succeed())
 	})
 
 	it("returns an empty Procfile when file does not exist", func() {
