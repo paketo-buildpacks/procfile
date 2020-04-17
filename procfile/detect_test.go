@@ -34,7 +34,6 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 
 		ctx    libcnb.DetectContext
 		detect procfile.Detect
-		path   string
 	)
 
 	it.Before(func() {
@@ -45,7 +44,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	it.After(func() {
-		Expect(os.RemoveAll(path)).To(Succeed())
+		Expect(os.RemoveAll(ctx.Application.Path)).To(Succeed())
 	})
 
 	it("fails without Procfile", func() {
@@ -53,13 +52,13 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	it("fails with empty Procfile", func() {
-		Expect(ioutil.WriteFile(filepath.Join(path, "Procfile"), []byte(""), 0644))
+		Expect(ioutil.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(""), 0644))
 
 		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{}))
 	})
 
 	it("passes with Procfile", func() {
-		Expect(ioutil.WriteFile(filepath.Join(path, "Procfile"), []byte(`test-type-1: test-command-1
+		Expect(ioutil.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(`test-type-1: test-command-1
 test-type-2: test-command-2`), 0644))
 
 		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{
