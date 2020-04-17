@@ -39,10 +39,9 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 
 	it.Before(func() {
 		var err error
-		path, err = ioutil.TempDir("", "procfile")
-		Expect(err).NotTo(HaveOccurred())
 
-		ctx.Application.Path = path
+		ctx.Application.Path, err = ioutil.TempDir("", "procfile")
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	it.After(func() {
