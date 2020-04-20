@@ -31,7 +31,7 @@ type Build struct {
 
 func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	b.Logger.Title(context.Buildpack)
-	result := libcnb.BuildResult{}
+	result := libcnb.NewBuildResult()
 
 	r := libpak.PlanEntryResolver{Plan: context.Plan}
 	e, ok, err := r.Resolve("procfile")

@@ -50,17 +50,12 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			},
 		}
 
-		Expect(build.Build(ctx)).To(Equal(libcnb.BuildResult{
-			Processes: []libcnb.Process{
-				{
-					Type:    "test-type-1",
-					Command: "test-command-1",
-				},
-				{
-					Type:    "test-type-2",
-					Command: "test-command-2",
-				},
-			},
-		}))
+		result := libcnb.NewBuildResult()
+		result.Processes = append(result.Processes,
+			libcnb.Process{Type: "test-type-1", Command: "test-command-1"},
+			libcnb.Process{Type: "test-type-2", Command: "test-command-2"},
+		)
+
+		Expect(build.Build(ctx)).To(Equal(result))
 	})
 }
