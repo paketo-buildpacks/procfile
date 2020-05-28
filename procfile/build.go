@@ -25,6 +25,8 @@ import (
 	"github.com/paketo-buildpacks/libpak/bard"
 )
 
+const tinyStackID = "io.paketo.stacks.tiny"
+
 type Build struct {
 	Logger bard.Logger
 }
@@ -42,7 +44,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	}
 
 	for k, v := range e.Metadata {
-		result.Processes = append(result.Processes, libcnb.Process{Type: k, Command: v.(string)})
+		result.Processes = append(result.Processes, libcnb.Process{Type: k, Command: v.(string), Direct: context.StackID == tinyStackID})
 	}
 
 	sort.Slice(result.Processes, func(i int, j int) bool {
