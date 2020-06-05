@@ -43,8 +43,8 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				{
 					Name: "procfile",
 					Metadata: map[string]interface{}{
-						"test-type-1": "test-command-1",
-						"test-type-2": "test-command-2",
+						"test-type-1": "test-command-1 test-arg-1",
+						"test-type-2": "test-command-2 test-arg-2",
 					},
 				},
 			},
@@ -52,8 +52,8 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		result := libcnb.NewBuildResult()
 		result.Processes = append(result.Processes,
-			libcnb.Process{Type: "test-type-1", Command: "test-command-1"},
-			libcnb.Process{Type: "test-type-2", Command: "test-command-2"},
+			libcnb.Process{Type: "test-type-1", Command: "test-command-1", Arguments: []string{"test-arg-1"}},
+			libcnb.Process{Type: "test-type-2", Command: "test-command-2", Arguments: []string{"test-arg-2"}},
 		)
 
 		Expect(build.Build(ctx)).To(Equal(result))
