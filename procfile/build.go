@@ -21,6 +21,7 @@ import (
 	"sort"
 
 	"github.com/buildpacks/libcnb"
+	"github.com/mattn/go-shellwords"
 	"github.com/paketo-buildpacks/libpak"
 	"github.com/paketo-buildpacks/libpak/bard"
 )
@@ -44,7 +45,23 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	}
 
 	for k, v := range e.Metadata {
-		result.Processes = append(result.Processes, libcnb.Process{Type: k, Command: v.(string), Direct: context.StackID == tinyStackID})
+		process := libcnb.Process{Type: k, Command: v.(string)}
+
+		if context.StackID == tinyStackID {
+			process.Direct = true
+
+			parsedCommand, err := shellwords.Parse(process.Command)
+			if err != nil {
+				return libcnb.BuildResult{}, fmt.Errorf("unable to parse command in procfile: %w", err)
+			}
+
+			process.Command = parsedCommand[0]
+			if len(parsedCommand) > 1 {
+				process.Arguments = parsedCommand[1:]
+			}
+		}
+
+		result.Processes = append(result.Processes, process)
 	}
 
 	sort.Slice(result.Processes, func(i int, j int) bool {
