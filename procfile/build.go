@@ -26,8 +26,6 @@ import (
 	"github.com/paketo-buildpacks/libpak/bard"
 )
 
-const tinyStackID = "io.paketo.stacks.tiny"
-
 type Build struct {
 	Logger bard.Logger
 }
@@ -45,20 +43,22 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	}
 
 	for k, v := range e.Metadata {
-		process := libcnb.Process{Type: k, Command: v.(string)}
+		var process libcnb.Process
 
-		if context.StackID == tinyStackID {
-			process.Direct = true
-
-			parsedCommand, err := shellwords.Parse(process.Command)
+		if context.StackID == "io.paketo.stacks.tiny" {
+			s, err := shellwords.Parse(v.(string))
 			if err != nil {
-				return libcnb.BuildResult{}, fmt.Errorf("unable to parse command in procfile: %w", err)
+				return libcnb.BuildResult{}, fmt.Errorf("unable to parse %s\n%w", s, err)
 			}
 
-			process.Command = parsedCommand[0]
-			if len(parsedCommand) > 1 {
-				process.Arguments = parsedCommand[1:]
+			process = libcnb.Process{
+				Type:      k,
+				Command:   s[0],
+				Arguments: s[1:],
+				Direct:    true,
 			}
+		} else {
+			process = libcnb.Process{Type: k, Command: v.(string)}
 		}
 
 		result.Processes = append(result.Processes, process)
