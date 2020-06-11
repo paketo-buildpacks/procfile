@@ -45,7 +45,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	for k, v := range e.Metadata {
 		var process libcnb.Process
 
-		if context.StackID == "io.paketo.stacks.tiny" {
+		if context.StackID == libpak.TinyStackID {
 			s, err := shellwords.Parse(v.(string))
 			if err != nil {
 				return libcnb.BuildResult{}, fmt.Errorf("unable to parse %s\n%w", s, err)

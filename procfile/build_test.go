@@ -21,6 +21,7 @@ import (
 
 	"github.com/buildpacks/libcnb"
 	. "github.com/onsi/gomega"
+	"github.com/paketo-buildpacks/libpak"
 	"github.com/paketo-buildpacks/procfile/procfile"
 	"github.com/sclevine/spec"
 )
@@ -69,7 +70,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	context("tiny stack", func() {
 		it.Before(func() {
-			ctx.StackID = "io.paketo.stacks.tiny"
+			ctx.StackID = libpak.TinyStackID
 		})
 
 		it("adds metadata to result", func() {

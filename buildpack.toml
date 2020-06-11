@@ -24,10 +24,10 @@ homepage = "https://github.com/paketo-buildpacks/procfile"
 id = "io.buildpacks.stacks.bionic"
 
 [[stacks]]
-id = "org.cloudfoundry.stacks.cflinuxfs3"
+id = "io.paketo.stacks.tiny"
 
 [[stacks]]
-id = "io.paketo.stacks.tiny"
+id = "org.cloudfoundry.stacks.cflinuxfs3"
 
 [metadata]
 pre-package   = "scripts/build.sh"
