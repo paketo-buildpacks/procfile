@@ -23,8 +23,9 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	"github.com/paketo-buildpacks/procfile/procfile"
 	"github.com/sclevine/spec"
+
+	"github.com/paketo-buildpacks/procfile/procfile"
 )
 
 func testProcfile(t *testing.T, context spec.G, it spec.S) {
