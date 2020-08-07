@@ -57,11 +57,13 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			libcnb.Process{
 				Type:    "test-type-1",
 				Command: "test-command-1",
+				Arguments: []string{},
 				Direct:  false,
 			},
 			libcnb.Process{
 				Type:    "test-type-2",
-				Command: "test-command-2 argument",
+				Command: "test-command-2",
+				Arguments: []string{"argument"},
 				Direct:  false,
 			},
 		)
