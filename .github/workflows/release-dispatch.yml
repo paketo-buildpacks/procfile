@@ -23,7 +23,7 @@ jobs:
 
     # Generic repository dispatch sender.
     - name: Send Repository Dispatch
-      uses: paketo-buildpacks/github-config/actions/dispatch@master
+      uses: paketo-buildpacks/github-config/actions/dispatch@main
       with:
         repos: paketo-community/ruby # comma-separated list of repos receiving the dispatch
         token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
