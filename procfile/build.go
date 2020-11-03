@@ -43,19 +43,19 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	}
 
 	for k, v := range e.Metadata {
-		s, err := shellwords.Parse(v.(string))
-		if err != nil {
-			return libcnb.BuildResult{}, fmt.Errorf("unable to parse %s\n%w", s, err)
-		}
-
-		process := libcnb.Process{
-			Type:      k,
-			Command:   s[0],
-			Arguments: s[1:],
-		}
+		process := libcnb.Process{Type: k}
 
 		if context.StackID == libpak.TinyStackID {
+			s, err := shellwords.Parse(v.(string))
+			if err != nil {
+				return libcnb.BuildResult{}, fmt.Errorf("unable to parse %s\n%w", s, err)
+			}
+
+			process.Command = s[0]
+			process.Arguments = s[1:]
 			process.Direct = true
+		} else {
+			process.Command = v.(string)
 		}
 
 		result.Processes = append(result.Processes, process)
