@@ -3,7 +3,7 @@ module github.com/paketo-buildpacks/procfile
 go 1.15
 
 require (
-	github.com/buildpacks/libcnb v1.19.0
+	github.com/buildpacks/libcnb v1.20.0
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-shellwords v1.0.11
 	github.com/onsi/gomega v1.11.0
