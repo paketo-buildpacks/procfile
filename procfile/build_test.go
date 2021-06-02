@@ -39,7 +39,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(build.Build(ctx)).To(Equal(libcnb.BuildResult{}))
 	})
 
-	it("adds metadata to result", func() {
+	it("adds metadata to result, marks first process as default", func() {
 		ctx.Plan = libcnb.BuildpackPlan{
 			Entries: []libcnb.BuildpackPlanEntry{
 				{
@@ -57,10 +57,40 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			libcnb.Process{
 				Type:    "test-type-1",
 				Command: "test-command-1",
+				Default: true,
 			},
 			libcnb.Process{
 				Type:    "test-type-2",
 				Command: "test-command-2 argument",
+			},
+		)
+
+		Expect(build.Build(ctx)).To(Equal(result))
+	})
+
+	it("adds metadata to result, marks web process as default", func() {
+		ctx.Plan = libcnb.BuildpackPlan{
+			Entries: []libcnb.BuildpackPlanEntry{
+				{
+					Name: "procfile",
+					Metadata: map[string]interface{}{
+						"test-type-1": "test-command-1",
+						"web":         "test-command-2 argument",
+					},
+				},
+			},
+		}
+
+		result := libcnb.NewBuildResult()
+		result.Processes = append(result.Processes,
+			libcnb.Process{
+				Type:    "test-type-1",
+				Command: "test-command-1",
+			},
+			libcnb.Process{
+				Type:    "web",
+				Command: "test-command-2 argument",
+				Default: true,
 			},
 		)
 
@@ -92,6 +122,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					Command:   "test-command-1",
 					Arguments: []string{},
 					Direct:    true,
+					Default:   true,
 				},
 				libcnb.Process{
 					Type:      "test-type-2",

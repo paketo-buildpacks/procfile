@@ -5,10 +5,13 @@ set -euo pipefail
 GOOS="linux" go build -ldflags='-s -w' -o bin/main github.com/paketo-buildpacks/procfile/cmd/main
 GOOS="windows" GOARCH="amd64" go build -ldflags='-s -w' -o bin/main.exe github.com/paketo-buildpacks/procfile/cmd/main
 
-strip bin/main
-upx -q -9 bin/main
-strip bin/main.exe
-upx -q -9 bin/main.exe
+if [ "${STRIP:-false}" != "false" ]; then
+  strip bin/main bin/main.exe
+fi
+
+if [ "${COMPRESS:-false}" != "false" ]; then
+  upx -q -9 bin/main bin/main.exe
+fi
 
 ln -fs main bin/build
 ln -fs main bin/detect

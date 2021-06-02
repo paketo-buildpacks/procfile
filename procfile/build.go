@@ -19,6 +19,7 @@ package procfile
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/buildpacks/libcnb"
 	"github.com/mattn/go-shellwords"
@@ -43,7 +44,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	}
 
 	for k, v := range e.Metadata {
-		process := libcnb.Process{Type: k}
+		process := libcnb.Process{Type: k, Default: strings.ToLower(k) == "web"}
 
 		if context.StackID == libpak.TinyStackID {
 			s, err := shellwords.Parse(v.(string))
@@ -59,6 +60,17 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 		}
 
 		result.Processes = append(result.Processes, process)
+	}
+
+	defaultSet := false
+	for _, process := range result.Processes {
+		if process.Default {
+			defaultSet = true
+			break
+		}
+	}
+	if !defaultSet && len(result.Processes) > 0 {
+		result.Processes[0].Default = true
 	}
 
 	sort.Slice(result.Processes, func(i int, j int) bool {
