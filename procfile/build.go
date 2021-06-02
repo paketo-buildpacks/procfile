@@ -44,7 +44,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	}
 
 	for k, v := range e.Metadata {
-		process := libcnb.Process{Type: k, Default: strings.ToLower(k) == "web"}
+		process := libcnb.Process{Type: k}
 
 		if context.StackID == libpak.TinyStackID {
 			s, err := shellwords.Parse(v.(string))
@@ -62,20 +62,22 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 		result.Processes = append(result.Processes, process)
 	}
 
-	defaultSet := false
-	for _, process := range result.Processes {
-		if process.Default {
-			defaultSet = true
-			break
-		}
-	}
-	if !defaultSet && len(result.Processes) > 0 {
-		result.Processes[0].Default = true
-	}
+	markDefaultProcess(result)
 
 	sort.Slice(result.Processes, func(i int, j int) bool {
 		return result.Processes[i].Type < result.Processes[j].Type
 	})
 
 	return result, nil
+}
+
+func markDefaultProcess(result libcnb.BuildResult) {
+	for _, magicType := range []string{"web", "worker"} {
+		for i, proc := range result.Processes {
+			if strings.EqualFold(magicType, proc.Type) {
+				result.Processes[i].Default = true
+				return
+			}
+		}
+	}
 }
