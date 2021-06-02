@@ -12,13 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-api = "0.5"
+api = "0.6"
 
 [buildpack]
 id       = "paketo-buildpacks/procfile"
 name     = "Paketo Procfile Buildpack"
 version  = "{{.version}}"
 homepage = "https://github.com/paketo-buildpacks/procfile"
+description = "A buildpack for translating a Procfile into Process Types"
+keywords    = ["procfile", "command"]
+
+[[buildpack.licenses]]
+type = "Apache-2.0"
+uri  = "https://github.com/paketo-buildpacks/procfile/blob/main/LICENSE"
 
 [[stacks]]
 id = "io.buildpacks.stacks.bionic"
