@@ -9,8 +9,8 @@ if [ "${STRIP:-false}" != "false" ]; then
   strip bin/main bin/main.exe
 fi
 
-if [ "${COMPRESS:-false}" != "false" ]; then
-  upx -q -9 bin/main bin/main.exe
+if [ "${COMPRESS:-none}" != "none" ]; then
+  $COMPRESS bin/main bin/main.exe
 fi
 
 ln -fs main bin/build
