@@ -22,6 +22,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/buildpacks/libcnb"
+
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/spec"
 
@@ -30,14 +32,15 @@ import (
 
 func testProcfile(t *testing.T, context spec.G, it spec.S) {
 	var (
-		Expect = NewWithT(t).Expect
-
-		path string
+		Expect         = NewWithT(t).Expect
+		path, bindPath string
+		bindings       libcnb.Bindings
 	)
 
 	it.Before(func() {
 		var err error
 		path, err = ioutil.TempDir("", "procfile")
+		bindPath, err = ioutil.TempDir("", "bindProcfile")
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -54,4 +57,66 @@ func testProcfile(t *testing.T, context spec.G, it spec.S) {
 
 		Expect(procfile.NewProcfileFromPath(path)).To(Equal(procfile.Procfile{"test-type": "test-command"}))
 	})
+
+	it("returns a Procfile from given binding", func() {
+		Expect(ioutil.WriteFile(filepath.Join(bindPath, "Procfile"), []byte("test-type-bind: test-command"), 0644)).To(Succeed())
+		bindings = libcnb.Bindings{libcnb.Binding{
+			Name:   "name1",
+			Type:   "Procfile",
+			Path:   bindPath,
+			Secret: map[string]string{"Procfile": filepath.Join(bindPath, "Procfile")},
+		}}
+
+		Expect(procfile.NewProcfileFromBinding(bindings)).To(Equal(procfile.Procfile{"test-type-bind": "test-command"}))
+	})
+
+	it("returns a Procfile with only file contents, if no binding", func() {
+		bindings = libcnb.Bindings{}
+		Expect(ioutil.WriteFile(filepath.Join(path, "Procfile"), []byte("test-type-path: test-command"), 0644)).To(Succeed())
+
+		Expect(procfile.NewProcfileFromPathOrBinding(path, bindings)).To(Equal(procfile.Procfile{"test-type-path": "test-command"}))
+
+	})
+
+	it("returns a Procfile with only binding contents, if no file", func() {
+		Expect(ioutil.WriteFile(filepath.Join(bindPath, "Procfile"), []byte("test-type-bind: test-command"), 0644)).To(Succeed())
+		bindings = libcnb.Bindings{libcnb.Binding{
+			Name:   "name1",
+			Type:   "Procfile",
+			Path:   bindPath,
+			Secret: map[string]string{"Procfile": filepath.Join(bindPath, "Procfile")},
+		}}
+
+		Expect(procfile.NewProcfileFromPathOrBinding(path, bindings)).To(Equal(procfile.Procfile{"test-type-bind": "test-command"}))
+
+	})
+
+	it("returns a merged Procfile from given binding + file", func() {
+		Expect(ioutil.WriteFile(filepath.Join(bindPath, "Procfile"), []byte("test-type-bind: test-command"), 0644)).To(Succeed())
+		bindings = libcnb.Bindings{libcnb.Binding{
+			Name:   "name1",
+			Type:   "Procfile",
+			Path:   bindPath,
+			Secret: map[string]string{"Procfile": filepath.Join(bindPath, "Procfile")},
+		}}
+		Expect(ioutil.WriteFile(filepath.Join(path, "Procfile"), []byte("test-type-path: test-command"), 0644)).To(Succeed())
+
+		Expect(procfile.NewProcfileFromPathOrBinding(path, bindings)).To(Equal(procfile.Procfile{"test-type-path": "test-command", "test-type-bind": "test-command"}))
+
+	})
+
+	it("returns a merged Procfile from given binding + file, binding takes precedence on duplicates", func() {
+		Expect(ioutil.WriteFile(filepath.Join(bindPath, "Procfile"), []byte("test-type: bind-test-command\ntest-type-2: another-test-command"), 0644)).To(Succeed())
+		bindings = libcnb.Bindings{libcnb.Binding{
+			Name:   "name1",
+			Type:   "Procfile",
+			Path:   bindPath,
+			Secret: map[string]string{"Procfile": filepath.Join(bindPath, "Procfile")},
+		}}
+		Expect(ioutil.WriteFile(filepath.Join(path, "Procfile"), []byte("test-type: path-test-command"), 0644)).To(Succeed())
+
+		Expect(procfile.NewProcfileFromPathOrBinding(path, bindings)).To(Equal(procfile.Procfile{"test-type": "bind-test-command", "test-type-2": "another-test-command"}))
+
+	})
+
 }

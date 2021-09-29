@@ -23,7 +23,8 @@ import (
 type Detect struct{}
 
 func (d Detect) Detect(context libcnb.DetectContext) (libcnb.DetectResult, error) {
-	p, err := NewProcfileFromPath(context.Application.Path)
+	// Create Procfile from source path or binding, if both exist, merge into one. The binding takes precedence on duplicate name/command pairs.
+	p, err := NewProcfileFromPathOrBinding(context.Application.Path, context.Platform.Bindings)
 	if err != nil {
 		return libcnb.DetectResult{}, err
 	}
