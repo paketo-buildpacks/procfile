@@ -22,12 +22,20 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+
+	"github.com/paketo-buildpacks/libpak/bindings"
+
+	"github.com/buildpacks/libcnb"
 )
 
 // Procfile is a map between a logical name and a command.
 type Procfile map[string]interface{}
 
-// NewProcfile creates a Procfile by reading Procfile from path if it exists.  If it does not exist, returns an
+const (
+	BindingType = "Procfile" // BindingType is used to resolve a binding containing a Procfile
+)
+
+// NewProcfileFromPath creates a Procfile by reading Procfile from path if it exists.  If it does not exist, returns an
 // empty Procfile.
 func NewProcfileFromPath(path string) (Procfile, error) {
 	pat := regexp.MustCompile(`^([A-Za-z0-9_-]+):\s*(.+)$`)
@@ -56,4 +64,52 @@ func NewProcfileFromPath(path string) (Procfile, error) {
 	}
 
 	return p, nil
+}
+
+// NewProcfileFromBinding creates a Procfile by reading Procfile from bindings if it exists.  If it does not exist, returns an
+// empty Procfile.
+func NewProcfileFromBinding(binds libcnb.Bindings) (Procfile, error) {
+
+	p := Procfile{}
+	if binding, ok, err := bindings.ResolveOne(binds, bindings.OfType(BindingType)); err != nil {
+		return nil, fmt.Errorf("unable to resolve binding\n%w", err)
+	} else if ok {
+		if path, ok := binding.SecretFilePath(BindingType); ok {
+			if p, err = NewProcfileFromPath(filepath.Dir(path)); err != nil {
+				return nil, err
+			}
+			return p, nil
+		} else {
+			return nil, fmt.Errorf("unable to find Procfile from binding")
+		}
+	} else {
+		return p, nil
+	}
+}
+
+// NewProcfileFromPathOrBinding attempts to create a merged Procfile from given path and bindings.  If neither can be created, returns an
+// empty Procfile.
+func NewProcfileFromPathOrBinding(path string, binds libcnb.Bindings) (Procfile, error) {
+
+	procPath, err := NewProcfileFromPath(path)
+	if err != nil {
+		return nil, err
+	}
+	procBind, err := NewProcfileFromBinding(binds)
+	if err != nil {
+		return nil, err
+	}
+	procBind = mergeProcfiles(procPath, procBind)
+	return procBind, nil
+}
+
+// merge procfiles from binding + path, overwriting duplicate keys - binding takes precedence
+func mergeProcfiles(maps ...map[string]interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
+	for _, m := range maps {
+		for k, v := range m {
+			result[k] = v
+		}
+	}
+	return result
 }
