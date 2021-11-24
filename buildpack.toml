@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-api = "0.6"
+api = "0.7"
 
 [buildpack]
   description = "A buildpack for translating a Procfile into Process Types"
@@ -20,6 +20,7 @@ api = "0.6"
   id = "paketo-buildpacks/procfile"
   keywords = ["procfile", "command"]
   name = "Paketo Procfile Buildpack"
+  sbom-formats = ["application/vnd.cyclonedx+json", "application/vnd.syft+json"]
   version = "{{.version}}"
 
   [[buildpack.licenses]]
