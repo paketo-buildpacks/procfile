@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-GOOS="linux" go build -ldflags='-s -w' -o bin/main github.com/paketo-buildpacks/procfile/cmd/main
-GOOS="windows" GOARCH="amd64" go build -ldflags='-s -w' -o bin/main.exe github.com/paketo-buildpacks/procfile/cmd/main
+GOOS="linux" go build -ldflags='-s -w' -o bin/main github.com/paketo-buildpacks/procfile/v5/cmd/main
+GOOS="windows" GOARCH="amd64" go build -ldflags='-s -w' -o bin/main.exe github.com/paketo-buildpacks/procfile/v5/cmd/main
 
 if [ "${STRIP:-false}" != "false" ]; then
   strip bin/main bin/main.exe
