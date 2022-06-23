@@ -137,9 +137,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 	})
 
-	context("tiny stack", func() {
+	context("bionic tiny stack", func() {
 		it.Before(func() {
-			ctx.StackID = libpak.TinyStackID
+			ctx.StackID = libpak.BionicTinyStackID
 		})
 
 		it("adds metadata to result", func() {
@@ -176,4 +176,41 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	})
 
+	context("jammy tiny stack", func() {
+		it.Before(func() {
+			ctx.StackID = libpak.JammyTinyStackID
+		})
+
+		it("adds metadata to result", func() {
+			ctx.Plan = libcnb.BuildpackPlan{
+				Entries: []libcnb.BuildpackPlanEntry{
+					{
+						Name: "procfile",
+						Metadata: map[string]interface{}{
+							"test-type-1": "test-command-1",
+							"test-type-2": "test-command-2 argument",
+						},
+					},
+				},
+			}
+
+			result := libcnb.NewBuildResult()
+			result.Processes = append(result.Processes,
+				libcnb.Process{
+					Type:      "test-type-1",
+					Command:   "test-command-1",
+					Arguments: []string{},
+					Direct:    true,
+				},
+				libcnb.Process{
+					Type:      "test-type-2",
+					Command:   "test-command-2",
+					Arguments: []string{"argument"},
+					Direct:    true,
+				},
+			)
+
+			Expect(build.Build(ctx)).To(Equal(result))
+		})
+	})
 }
