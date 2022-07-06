@@ -32,13 +32,4 @@ api = "0.7"
   pre-package = "scripts/build.sh"
 
 [[stacks]]
-  id = "io.buildpacks.stacks.bionic"
-
-[[stacks]]
-  id = "io.paketo.stacks.tiny"
-
-[[stacks]]
   id = "*"
-
-[[stacks]]
-  id = "io.buildpacks.stacks.windows.servercore"
