@@ -19,7 +19,7 @@ api = "0.7"
   homepage = "https://github.com/paketo-buildpacks/procfile"
   id = "paketo-buildpacks/procfile"
   keywords = ["procfile", "command"]
-  name = "Paketo Procfile Buildpack"
+  name = "Paketo Buildpack for Procfile"
   sbom-formats = ["application/vnd.cyclonedx+json", "application/vnd.syft+json"]
   version = "{{.version}}"
 
