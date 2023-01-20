@@ -1,0 +1,5 @@
+[[requires]]
+  name = "procfile"
+
+  [requires.metadata]
+    web = "sleep 3600"
