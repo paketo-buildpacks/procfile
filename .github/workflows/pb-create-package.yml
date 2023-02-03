@@ -227,5 +227,5 @@ jobs:
               with:
                 address: docker.io/paketobuildpacks/procfile@${{ steps.package.outputs.digest }}
                 id: paketo-buildpacks/procfile
-                token: ${ secrets.PAKETO_BOT_GITHUB_TOKEN }
+                token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
                 version: ${{ steps.version.outputs.version }}
