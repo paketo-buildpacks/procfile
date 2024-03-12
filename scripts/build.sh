@@ -2,18 +2,18 @@
 
 set -euo pipefail
 
-GOOS="linux" go build -ldflags='-s -w' -o bin/main github.com/paketo-buildpacks/procfile/v5/cmd/main
-GOOS="windows" GOARCH="amd64" go build -ldflags='-s -w' -o bin/main.exe github.com/paketo-buildpacks/procfile/v5/cmd/main
+GOOS="linux" go build -ldflags='-s -w' -o linux/amd64/bin/main github.com/paketo-buildpacks/procfile/v5/cmd/main
+GOOS="linux" GOARCH="arm64" go build -ldflags='-s -w' -o linux/arm64/bin/main github.com/paketo-buildpacks/procfile/v5/cmd/main
 
 if [ "${STRIP:-false}" != "false" ]; then
-  strip bin/main bin/main.exe
+  strip linux/amd64/bin/main linux/arm64/bin/main
 fi
 
 if [ "${COMPRESS:-none}" != "none" ]; then
-  $COMPRESS bin/main bin/main.exe
+  $COMPRESS linux/amd64/bin/main linux/arm64/bin/main
 fi
 
-ln -fs main bin/build
-ln -fs main bin/detect
-ln -fs main.exe bin/build.exe
-ln -fs main.exe bin/detect.exe
+ln -fs main linux/amd64/bin/build
+ln -fs main linux/arm64/bin/build
+ln -fs main linux/amd64/bin/detect
+ln -fs main linux/arm64/bin/detect
