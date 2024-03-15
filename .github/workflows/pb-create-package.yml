@@ -1,8 +1,8 @@
 name: Create Package
 "on":
-  push:
-    branches:
-      - dualarch-experiment
+    release:
+        types:
+            - published
 jobs:
     create-package:
         name: Create Package
@@ -37,20 +37,9 @@ jobs:
               with:
                 crane-version: 0.19.0
                 yj-version: 5.1.0
-            - name: Install pack
-              run: |
-                #!/usr/bin/env bash
-                # this is coming from a copy of https://github.com/buildpacks/pack/actions/runs/8118576298 stored on box
-                # TODO to revisit when the official one is out
-                set -euo pipefail
-
-                echo "Installing pack experimental"
-
-                mkdir -p "${HOME}"/bin
-                echo "${HOME}/bin" >> "${GITHUB_PATH}"
-
-                curl -L "https://ent.box.com/shared/static/j4d1bfe9uk1sb0i7zjvci0md9xmy41u4" -o ${HOME}/bin/pack
-                chmod +x "${HOME}"/bin/pack
+            - uses: buildpacks/github-actions/setup-pack@v5.5.3
+              with:
+                pack-version: 0.33.2
             - name: Enable pack Experimental
               if: ${{ false }}
               run: |
@@ -144,20 +133,15 @@ jobs:
 
                 set -euo pipefail
 
-                CONFIG="--config "${HOME}"/package.toml"
-                #TODO with this, we don't need to use the package.toml, because pack exp. does not support it with multi arch yet
-                if ! [ -f "${PWD}/package.toml" ]; then
-                  cd ~/buildpack
-                  CONFIG=""
-                fi
 
                 PACKAGE_LIST=($PACKAGES)
                 # Extract first repo (Docker Hub) as the main to package & register
                 PACKAGE=${PACKAGE_LIST[0]}
 
                 if [[ "${PUBLISH:-x}" == "true" ]]; then
-                  pack -v buildpack package \
-                    "${PACKAGE}:${VERSION}" ${CONFIG} \
+                  pack buildpack package \
+                    "${PACKAGE}:${VERSION}" \
+                    --config "${HOME}"/package.toml \
                     --publish
 
                   if [[ -n ${VERSION_MINOR:-} && -n ${VERSION_MAJOR:-} ]]; then
@@ -181,42 +165,43 @@ jobs:
                     done
 
                 else
-                  pack -v buildpack package \
-                    "${PACKAGE}:${VERSION}" ${CONFIG} \
+                  pack buildpack package \
+                    "${PACKAGE}:${VERSION}" \
+                    --config "${HOME}"/package.toml \
                     --format "${FORMAT}"
                 fi
               env:
                 PACKAGES: docker.io/paketobuildpacks/procfile gcr.io/paketo-buildpacks/procfile
                 PUBLISH: "true"
-                VERSION: dualarch-experiment-mar15
-                VERSION_MAJOR: dual-mar15
-                VERSION_MINOR: arch-mar15
-#            - name: Update release with digest
-#              run: |
-#                #!/usr/bin/env bash
-#
-#                set -euo pipefail
-#
-#                PAYLOAD=$(cat "${GITHUB_EVENT_PATH}")
-#
-#                RELEASE_ID=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.id')
-#                RELEASE_TAG_NAME=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.tag_name')
-#                RELEASE_NAME=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.name')
-#                RELEASE_BODY=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.body')
-#
-#                gh api \
-#                  --method PATCH \
-#                  "/repos/:owner/:repo/releases/${RELEASE_ID}" \
-#                  --field "tag_name=${RELEASE_TAG_NAME}" \
-#                  --field "name=${RELEASE_NAME}" \
-#                  --field "body=${RELEASE_BODY//<!-- DIGEST PLACEHOLDER -->/\`${DIGEST}\`}"
-#              env:
-#                DIGEST: ${{ steps.package.outputs.digest }}
-#                GITHUB_TOKEN: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
-#            - if: ${{ true }}
-#              uses: docker://ghcr.io/buildpacks/actions/registry/request-add-entry:4.0.1
-#              with:
-#                address: docker.io/paketobuildpacks/procfile@${{ steps.package.outputs.digest }}
-#                id: paketo-buildpacks/procfile
-#                token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
-#                version: ${{ steps.version.outputs.version }}
+                VERSION: ${{ steps.version.outputs.version }}
+                VERSION_MAJOR: ${{ steps.version.outputs.version-major }}
+                VERSION_MINOR: ${{ steps.version.outputs.version-minor }}
+            - name: Update release with digest
+              run: |
+                #!/usr/bin/env bash
+
+                set -euo pipefail
+
+                PAYLOAD=$(cat "${GITHUB_EVENT_PATH}")
+
+                RELEASE_ID=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.id')
+                RELEASE_TAG_NAME=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.tag_name')
+                RELEASE_NAME=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.name')
+                RELEASE_BODY=$(jq -n -r --argjson PAYLOAD "${PAYLOAD}" '$PAYLOAD.release.body')
+
+                gh api \
+                  --method PATCH \
+                  "/repos/:owner/:repo/releases/${RELEASE_ID}" \
+                  --field "tag_name=${RELEASE_TAG_NAME}" \
+                  --field "name=${RELEASE_NAME}" \
+                  --field "body=${RELEASE_BODY//<!-- DIGEST PLACEHOLDER -->/\`${DIGEST}\`}"
+              env:
+                DIGEST: ${{ steps.package.outputs.digest }}
+                GITHUB_TOKEN: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
+            - if: ${{ true }}
+              uses: docker://ghcr.io/buildpacks/actions/registry/request-add-entry:4.0.1
+              with:
+                address: docker.io/paketobuildpacks/procfile@${{ steps.package.outputs.digest }}
+                id: paketo-buildpacks/procfile
+                token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
+                version: ${{ steps.version.outputs.version }}

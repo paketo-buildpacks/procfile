@@ -118,20 +118,15 @@ jobs:
 
                 set -euo pipefail
 
-                CONFIG="--config "${HOME}"/package.toml"
-                #TODO with this, we don't need to use the package.toml, because pack exp. does not support it with multi arch yet
-                if ! [ -f "${PWD}/package.toml" ]; then
-                  cd ~/buildpack
-                  CONFIG=""
-                fi
 
                 PACKAGE_LIST=($PACKAGES)
                 # Extract first repo (Docker Hub) as the main to package & register
                 PACKAGE=${PACKAGE_LIST[0]}
 
                 if [[ "${PUBLISH:-x}" == "true" ]]; then
-                  pack -v buildpack package \
-                    "${PACKAGE}:${VERSION}" ${CONFIG} \
+                  pack buildpack package \
+                    "${PACKAGE}:${VERSION}" \
+                    --config "${HOME}"/package.toml \
                     --publish
 
                   if [[ -n ${VERSION_MINOR:-} && -n ${VERSION_MAJOR:-} ]]; then
@@ -155,8 +150,9 @@ jobs:
                     done
 
                 else
-                  pack -v buildpack package \
-                    "${PACKAGE}:${VERSION}" ${CONFIG} \
+                  pack buildpack package \
+                    "${PACKAGE}:${VERSION}" \
+                    --config "${HOME}"/package.toml \
                     --format "${FORMAT}"
                 fi
               env:
