@@ -48,11 +48,18 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 		Expect(os.RemoveAll(ctx.Application.Path)).To(Succeed())
 	})
 
-	it("fails without Procfile", func() {
+	it("fails without Procfile or BP_PROCFILE_DEFAULT_PROCESS", func() {
 		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{}))
 	})
 
 	it("fails with empty Procfile", func() {
+		Expect(ioutil.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(""), 0644))
+
+		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{}))
+	})
+
+	it("fails with empty Procfile and empty BP_PROCFILE_DEFAULT_PROCESS", func() {
+		t.Setenv("BP_PROCFILE_DEFAULT_PROCESS", "")
 		Expect(ioutil.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(""), 0644))
 
 		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{}))
@@ -73,6 +80,26 @@ test-type-2: test-command-2`), 0644))
 						{Name: "procfile", Metadata: procfile.Procfile{
 							"test-type-1": "test-command-1",
 							"test-type-2": "test-command-2",
+						}},
+					},
+				},
+			},
+		}))
+	})
+
+	it("passes with BP_PROCFILE_DEFAULT_PROCESS", func() {
+		t.Setenv("BP_PROCFILE_DEFAULT_PROCESS", "test-command-1")
+
+		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{
+			Pass: true,
+			Plans: []libcnb.BuildPlan{
+				{
+					Provides: []libcnb.BuildPlanProvide{
+						{Name: "procfile"},
+					},
+					Requires: []libcnb.BuildPlanRequire{
+						{Name: "procfile", Metadata: procfile.Procfile{
+							"web": "test-command-1",
 						}},
 					},
 				},

@@ -6,11 +6,14 @@ This buildpack will participate if one or all of the following conditions are me
 
 * The application contains a `Procfile`
 * A Binding exists with type `Procfile` and secret containing a `Procfile`
+* The `BP_PROCFILE_DEFAULT_PROCESS` environment variable is set to a non-empty value
 
 The buildpack will do the following:
 
+* When `BP_PROCFILE_DEFAULT_PROCESS` is set, it will contribute the `web` process type to the image.
 * Contribute the process types from one or both `Procfile` files to the image.
   * If process types are identified from both Binding _and_ file, the contents are merged into a single `Procfile`. Commands from the Binding take precedence if there are duplicate types.
+  * If process types are identified from environment _and_ Binding _or_ file, the contents are merged into a single `Procfile`. Commands from Binding or file take precedence if there are duplicate types, with Binding taking precedence over file.
   * If the application's stack is `io.paketo.stacks.tiny` the contents of the `Procfile` must be single command with zero or more space delimited arguments. Argument values containing whitespace should be quoted. The resulting process will be executed directly and will not be parsed by the shell.
   * If the application's stack is not `io.paketo.stacks.tiny` the contents of `Procfile` will be executed as a shell script.
 
