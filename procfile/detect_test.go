@@ -17,7 +17,6 @@
 package procfile_test
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -38,10 +37,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 	)
 
 	it.Before(func() {
-		var err error
-
-		ctx.Application.Path, err = ioutil.TempDir("", "procfile")
-		Expect(err).NotTo(HaveOccurred())
+		ctx.Application.Path = t.TempDir()
 	})
 
 	it.After(func() {
@@ -53,20 +49,20 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	it("fails with empty Procfile", func() {
-		Expect(ioutil.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(""), 0644))
+		Expect(os.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(""), 0644))
 
 		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{}))
 	})
 
 	it("fails with empty Procfile and empty BP_PROCFILE_DEFAULT_PROCESS", func() {
 		t.Setenv("BP_PROCFILE_DEFAULT_PROCESS", "")
-		Expect(ioutil.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(""), 0644))
+		Expect(os.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(""), 0644))
 
 		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{}))
 	})
 
 	it("passes with Procfile", func() {
-		Expect(ioutil.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(`test-type-1: test-command-1
+		Expect(os.WriteFile(filepath.Join(ctx.Application.Path, "Procfile"), []byte(`test-type-1: test-command-1
 test-type-2: test-command-2`), 0644))
 
 		Expect(detect.Detect(ctx)).To(Equal(libcnb.DetectResult{
