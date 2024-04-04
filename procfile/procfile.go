@@ -23,6 +23,7 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/paketo-buildpacks/libpak/bard"
 	"github.com/paketo-buildpacks/libpak/bindings"
 
 	"github.com/buildpacks/libcnb"
@@ -34,6 +35,17 @@ type Procfile map[string]interface{}
 const (
 	BindingType = "Procfile" // BindingType is used to resolve a binding containing a Procfile
 )
+
+// NewProcfileFromEnvironment creates a Procfile by reading environment variable BP_PROCFILE_DEFAULT_PROCESS if it exists.
+// If it does not exist, returns an empty Procfile.
+func NewProcfileFromEnvironment() (Procfile, error) {
+	if process, isSet := os.LookupEnv("BP_PROCFILE_DEFAULT_PROCESS"); isSet {
+		if process != "" {
+			return Procfile{"web": process}, nil
+		}
+	}
+	return nil, nil
+}
 
 // NewProcfileFromPath creates a Procfile by reading Procfile from path if it exists.  If it does not exist, returns an
 // empty Procfile.
@@ -87,10 +99,13 @@ func NewProcfileFromBinding(binds libcnb.Bindings) (Procfile, error) {
 	}
 }
 
-// NewProcfileFromPathOrBinding attempts to create a merged Procfile from given path and bindings.  If neither can be created, returns an
-// empty Procfile.
-func NewProcfileFromPathOrBinding(path string, binds libcnb.Bindings) (Procfile, error) {
-
+// NewProcfileFromEnvironmentOrPathOrBinding attempts to create a merged Procfile from environment and/or given path and bindings.
+// If none can be created, returns an empty Procfile.
+func NewProcfileFromEnvironmentOrPathOrBinding(path string, binds libcnb.Bindings) (Procfile, error) {
+	procEnv, err := NewProcfileFromEnvironment()
+	if err != nil {
+		return nil, err
+	}
 	procPath, err := NewProcfileFromPath(path)
 	if err != nil {
 		return nil, err
@@ -99,7 +114,12 @@ func NewProcfileFromPathOrBinding(path string, binds libcnb.Bindings) (Procfile,
 	if err != nil {
 		return nil, err
 	}
-	procBind = mergeProcfiles(procPath, procBind)
+	if len(procEnv) > 0 && len(procPath)+len(procBind) > 0 {
+		l := bard.NewLogger(os.Stdout)
+		l.Logger.Info("A Procfile exists and BP_PROCFILE_DEFAULT_PROCESS is set, entries in Procfile take precedence")
+	}
+
+	procBind = mergeProcfiles(procEnv, procPath, procBind)
 	return procBind, nil
 }
 
