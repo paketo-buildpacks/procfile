@@ -3,7 +3,7 @@ module github.com/paketo-buildpacks/procfile/v5
 go 1.20
 
 require (
-	github.com/buildpacks/libcnb v1.30.1
+	github.com/buildpacks/libcnb v1.30.3
 	github.com/mattn/go-shellwords v1.0.12
 	github.com/onsi/gomega v1.33.0
 	github.com/paketo-buildpacks/libpak v1.69.1
