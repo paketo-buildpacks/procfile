@@ -15,7 +15,7 @@ The buildpack will do the following:
   * If process types are identified from both Binding _and_ file, the contents are merged into a single `Procfile`. Commands from the Binding take precedence if there are duplicate types.
   * If process types are identified from environment _and_ Binding _or_ file, the contents are merged into a single `Procfile`. Commands from Binding or file take precedence if there are duplicate types, with Binding taking precedence over file.
   * If the application's stack is `io.paketo.stacks.tiny` the contents of the `Procfile` must be single command with zero or more space delimited arguments. Argument values containing whitespace should be quoted. The resulting process will be executed directly and will not be parsed by the shell.
-  * If the application's stack is not `io.paketo.stacks.tiny` the contents of `Procfile` will be executed as a shell script.
+  * If the application's stack is not `io.paketo.stacks.tiny` the contents of `Procfile` will be executed as a shell script unless `BP_DIRECT_PROCESS` is set to `true`.
 
 ## Bindings
 

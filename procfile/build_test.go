@@ -67,6 +67,36 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(build.Build(ctx)).To(Equal(result))
 	})
 
+	context("given BP_DIRECT_PROCESS=true", func() {
+		it.Before(func() {
+			t.Setenv("BP_DIRECT_PROCESS", "true")
+		})
+
+		it("uses a process with direct=true", func() {
+			ctx.Plan = libcnb.BuildpackPlan{
+				Entries: []libcnb.BuildpackPlanEntry{
+					{
+						Name: "procfile",
+						Metadata: map[string]interface{}{
+							"test-type": "test-command",
+						},
+					},
+				},
+			}
+
+			result := libcnb.NewBuildResult()
+			result.Processes = append(result.Processes,
+				libcnb.Process{
+					Type:    "test-type",
+					Command: "test-command",
+					Direct:  true,
+				},
+			)
+
+			Expect(build.Build(ctx)).To(Equal(result))
+		})
+	})
+
 	context("given a special process name", func() {
 		var assertMarkedAsDefault = func(name string) {
 			ctx.Plan = libcnb.BuildpackPlan{

@@ -25,6 +25,7 @@ import (
 	"github.com/mattn/go-shellwords"
 	"github.com/paketo-buildpacks/libpak"
 	"github.com/paketo-buildpacks/libpak/bard"
+	"github.com/paketo-buildpacks/libpak/sherpa"
 )
 
 type Build struct {
@@ -57,6 +58,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 			process.Direct = true
 		} else {
 			process.Command = v.(string)
+			process.Direct = sherpa.ResolveBool("BP_DIRECT_PROCESS")
 		}
 
 		result.Processes = append(result.Processes, process)
