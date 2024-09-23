@@ -19,6 +19,8 @@ The buildpack will do the following:
 * If `BP_DIRECT_PROCESS` is set to `true`, the command will not be executed within a shell.
   * This behavior will become the default with the next major version, fulfilling [RFC-0093](https://github.com/buildpacks/rfcs/blob/main/text/0093-remove-shell-processes.md). Afterwards, this option will be deprecated and removed eventually.
 
+The `BP_DIRECT_PROCESS` environment variable can be used to opt-in in starting processes directly. The next major version of this buildpack will no longer support indirect processes and all processes will be started directly. Once processes are no longer started indirectly by default, the configuration `BP_DIRECT_PROCESS` will be removed since it will have no effect.
+
 ## Bindings
 
 The buildpack optionally accepts the following bindings:
