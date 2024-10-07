@@ -40,5 +40,10 @@ arch = "arm64"
   include-files = ["LICENSE", "NOTICE", "README.md", "linux/amd64/bin/build", "linux/amd64/bin/detect", "linux/amd64/bin/main", "linux/arm64/bin/build", "linux/arm64/bin/detect", "linux/arm64/bin/main", "buildpack.toml"]
   pre-package = "scripts/build.sh"
 
+[[metadata.configurations]]
+    name = "BP_DIRECT_PROCESS"
+    default = "false"
+    description = "start the processes directly or with a shell"
+
 [[stacks]]
   id = "*"
