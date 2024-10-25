@@ -25,9 +25,9 @@ The `BP_DIRECT_PROCESS` environment variable can be used to opt-in in starting p
 
 The buildpack optionally accepts the following bindings:
 
-|Key                   | Value   | Description
-|----------------------|---------|------------
-|`Procfile` |List of`<process-type>: <command>` entries | The entries from this Binding will be merged with those from the application's `Procfile`, if both are present. The commands from this Binding take precedence over the application's `Procfile` if there are duplicate process-types.
+|Key                   | Type | Value   | Description
+|----------------------|------|---------|------------
+|`Procfile` |`Procfile` |List of`<process-type>: <command>` entries | The entries from this Binding will be merged with those from the application's `Procfile`, if both are present. The commands from this Binding take precedence over the application's `Procfile` if there are duplicate process-types.
 
 
 
