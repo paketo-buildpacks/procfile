@@ -47,7 +47,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	for k, v := range e.Metadata {
 		process := libcnb.Process{Type: k}
 
-		if (context.StackID == libpak.BionicTinyStackID) || (context.StackID == libpak.JammyTinyStackID) {
+		if (context.StackID == libpak.BionicTinyStackID) || (context.StackID == libpak.JammyTinyStackID) || sherpa.ResolveBool("BP_DIRECT_PROCESS") {
 			s, err := shellwords.Parse(v.(string))
 			if err != nil {
 				return libcnb.BuildResult{}, fmt.Errorf("unable to parse %s\n%w", s, err)
@@ -58,7 +58,7 @@ func (b Build) Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 			process.Direct = true
 		} else {
 			process.Command = v.(string)
-			process.Direct = sherpa.ResolveBool("BP_DIRECT_PROCESS")
+			process.Direct = false
 		}
 
 		result.Processes = append(result.Processes, process)
