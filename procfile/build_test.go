@@ -78,7 +78,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					{
 						Name: "procfile",
 						Metadata: map[string]interface{}{
-							"test-type": "test-command",
+							"test-type": "test-command arg",
 						},
 					},
 				},
@@ -87,9 +87,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			result := libcnb.NewBuildResult()
 			result.Processes = append(result.Processes,
 				libcnb.Process{
-					Type:    "test-type",
-					Command: "test-command",
-					Direct:  true,
+					Type:      "test-type",
+					Command:   "test-command",
+					Arguments: []string{"arg"},
+					Direct:    true,
 				},
 			)
 
