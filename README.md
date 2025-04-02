@@ -1,4 +1,7 @@
-# `gcr.io/paketo-buildpacks/procfile`
+# Paketo Buildpack for Procfile
+
+## Buildpack ID: `paketo-buildpacks/procfile`
+## Registry URLs: `docker.io/paketobuildpacks/procfile`
 The Procfile Buildpack is a Cloud Native Buildpack that turns the contents of a Procfile into process types.
 
 ## Behavior
