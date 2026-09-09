@@ -1,11 +1,11 @@
 module github.com/paketo-buildpacks/procfile/v5
 
-go 1.26
+go 1.27
 
 require (
 	github.com/buildpacks/libcnb v1.30.4
 	github.com/mattn/go-shellwords v1.0.14
-	github.com/onsi/gomega v1.42.1
+	github.com/onsi/gomega v1.43.0
 	github.com/paketo-buildpacks/libpak v1.73.0
 	github.com/sclevine/spec v1.4.0
 )
