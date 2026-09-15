@@ -59,7 +59,7 @@ func NewProcfileFromPath(path string) (Procfile, error) {
 	} else if err != nil {
 		return nil, fmt.Errorf("unable to open Procfile %s\n%w", f, err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	p := Procfile{}
 
@@ -116,7 +116,7 @@ func NewProcfileFromEnvironmentOrPathOrBinding(path string, binds libcnb.Binding
 	}
 	if len(procEnv) > 0 && len(procPath)+len(procBind) > 0 {
 		l := bard.NewLogger(os.Stdout)
-		l.Logger.Info("A Procfile exists and BP_PROCFILE_DEFAULT_PROCESS is set, entries in Procfile take precedence")
+		l.Info("A Procfile exists and BP_PROCFILE_DEFAULT_PROCESS is set, entries in Procfile take precedence")
 	}
 
 	procBind = mergeProcfiles(procEnv, procPath, procBind)

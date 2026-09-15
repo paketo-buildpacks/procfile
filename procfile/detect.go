@@ -34,7 +34,7 @@ func (d Detect) Detect(context libcnb.DetectContext) (libcnb.DetectResult, error
 	}
 
 	if len(p) == 0 {
-		l.Logger.Info("SKIPPED: No procfile found from environment, source path, or binding.")
+		l.Info("SKIPPED: No procfile found from environment, source path, or binding.")
 		return libcnb.DetectResult{Pass: false}, nil
 	}
 
