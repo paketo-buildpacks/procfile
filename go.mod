@@ -5,7 +5,7 @@ go 1.27.1
 require (
 	github.com/buildpacks/libcnb v1.30.4
 	github.com/mattn/go-shellwords v1.0.15
-	github.com/onsi/gomega v1.43.0
+	github.com/onsi/gomega v1.43.1
 	github.com/paketo-buildpacks/libpak v1.73.0
 	github.com/sclevine/spec v1.4.0
 )
