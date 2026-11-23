@@ -4,7 +4,7 @@ go 1.27.4
 
 require (
 	github.com/buildpacks/libcnb v1.30.4
-	github.com/mattn/go-shellwords v1.0.16
+	github.com/mattn/go-shellwords v1.0.17
 	github.com/onsi/gomega v1.44.0
 	github.com/paketo-buildpacks/libpak v1.73.0
 	github.com/sclevine/spec v1.4.0
@@ -21,7 +21,7 @@ require (
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mitchellh/hashstructure/v2 v2.0.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
-	golang.org/x/net v0.62.0 // indirect
+	golang.org/x/net v0.63.0 // indirect
 	golang.org/x/sys v0.50.0 // indirect
 	golang.org/x/text v0.44.0 // indirect
 )
